@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+       
+
+
+    body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9f5f4fa;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(1, 2, 8, 0.624);
+    background-color: #7d87ce;
+}
+
+th, td {
+    border: 1px solid #000000;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #030000e1;
+    color: #fff;
+}
+
+tr:hover {
+    background-color: #544b7d2b;
+} 
+    </style>
+
+</head>
+<body>
+    <h1>Student Details</h1>
+    <table id="userTable">node
+        <thead>
+            <tr>
+                <th>Username</th>
+                
+                <th>E-mail</th>
+               
+                <th></th>
+            </tr>
+               
+          
+        </thead>
+        <tbody></tbody>
+    </table>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Fetch users from the /users endpoint using Axios
+        const response = await axios.get('http://localhost:3000/students');
+        const users = response.data;
+
+        // Display users in a table
+        const userTableElement = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+        users.forEach(user => {
+            const row = userTableElement.insertRow();
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+          
+            const cell3 = row.insertCell(2);
+
+            cell1.textContent = user.username;
+            
+            cell2.textContent = user.email;
+          
+            cell3.innerHTML = `<button onclick="deleteStudent('${user.username}')">Delete</button>`;
+        });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        alert('Error fetching users. Please try again later.');
+    }
+});
+async function deleteStudent(username){
+    try{
+        const response= await axios.delete(`http://localhost:3000/students/${username}`);
+        console.log('Server response:', response.data);
+        if(response.status===200){
+            alert('Student deleted successfully');
+            location.reload();
+        }
+        else{
+            alert('Error deleting student. Please try again later.');
+        }
+    }catch(error){
+        console.error('Error deleting student:', error);
+        alert('An error occurred while deleting the student. Please try again later.');
+    }
+}
+</script>
+</body>
+</html>
